@@ -1,0 +1,2 @@
+DELETE FROM scores2 ORDER BY score_Math1 DESC LIMIT 5;
+SELECT * FROM scores2 ;

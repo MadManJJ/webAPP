@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ข้อสอบ คณิต1</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad&family=Roboto:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad&family=IBM+Plex+Sans+Thai:wght@200&family=Roboto:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+    <style>
+        *{
+        margin: 0;
+        padding: 0;
+        
+        box-sizing: border-box;
+        }
+        body{
+            background: #10202b;
+        }
+        header{
+            font-family: 'Afacad', sans-serif;
+            position: relative;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 99;
+            margin-bottom: 50px;
+            font-size: 20px;
+        }
+        .icon ion-icon {
+            font-size: 100px;
+            cursor: pointer;
+            color: #fff;
+        }
+        .navigation a {
+            position: relative;
+            font-size: 1.1em;
+            text-decoration: none;
+            font-weight: 500;
+            margin-left: 40px;
+            color: white;
+        }
+        .navigation a::after{
+            content: '';
+            position: absolute;
+            left : 0;
+            bottom:-6px;
+            width: 100%;
+            height: 3px;
+            background: white;
+            border-radius: 5px;
+            transform: scaleX(0);
+            transition: transform .5s;
+        }
+        .navigation a:hover:after{
+            transform: scaleX(1);
+        }
+        .navigation .btnLogi-popup{
+            width: 130px;
+            height: 50px;
+            background: transparent;
+            border: 2px solid ;
+            outline: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1em;
+            color: white;
+            font-weight: 500;
+            margin-left: 40px;
+            transition: .5s;
+        }
+        .navigation .btnLogi-popup:hover{
+            background: white;
+            color:#161616;
+        }
+        .app{
+            background: #fff;
+            width: 90%;
+            max-width: 600px;
+            margin: 100px auto 0;
+            border-radius: 10px;
+            padding: 30px;
+            font-family: 'Afacad', sans-serif;
+            font-family: 'IBM Plex Sans Thai', sans-serif;
+            font-family: 'Roboto', sans-serif;
+        }
+        .app h1 {
+            font-size: 25px;
+            color: #001e4d;
+            font-weight: 600;
+            border-bottom: 1px solid #333;
+            padding-bottom: 30px;
+        }
+        .quiz{
+            padding: 20px 0;
+            
+        }
+        .quiz h2{
+            font-size: 18px;
+            color : #001e4d; 
+            font-weight: 600;
+            
+        }
+        .btn{
+            background: #fff;
+            color: #222;
+            font-weight: 500;
+            width: 100%;
+            border: 1px solid #222;
+            padding: 10px;
+            margin: 10px 0;
+            text-align: left;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn:hover:not([disabled]){ /* hover effect will work if it not disable it will now work if it disable */
+            background : #222;
+            color: #fff;
+        }
+        .btn:disabled{
+            cursor: no-drop;
+        }
+        #next-btn{
+            background: #001e4d;
+            color: #fff;
+            font-weight: 500;
+            width: 150px;
+            border: 0;
+            padding: 10px;
+            margin: 20px auto 0;
+            border-radius: 4px;
+            cursor: pointer;
+            display: none;
+        }
+        .correct{
+            background: #9aeabc;
+
+        }
+        .incorrect{
+            background: #ff9393;
+        }
+        #survey{
+            cursor: pointer;
+            display: none;
+            text-decoration: none;
+            text-align: center;
+            padding: 50px;
+        }
+        #survey a {
+            position: relative;
+            background: #fff;
+            color: #fff;
+            text-decoration: none;
+            text-transform: uppercase;
+            border: none;
+            letter-spacing: 0.1rem;
+            font-size: 1rem;
+            padding: 1rem 3rem;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        
+        #survey a:hover {
+            letter-spacing: 0.2rem;
+            padding: 1.1rem 3.1rem;
+            background: var(--clr);
+            color: var(--clr);
+            /* box-shadow: 0 0 35px var(--clr); */
+            animation: box 3s infinite;
+        }
+        
+        #survey a::before {
+            content: "";
+            position: absolute;
+            inset: 2px;
+            background: #10202b;
+        }
+        
+        #survey a span {
+            position: relative;
+            z-index: 1;
+        }
+        #survey a i {
+            position: absolute;
+            inset: 0;
+            display: block;
+        }
+        
+        #survey a i::before {
+            content: "";
+            position: absolute;
+            width: 10px;
+            height: 2px;
+            left: 80%;
+            top: -2px;
+            border: 2px solid var(--clr);
+            background: #272822;
+            transition: 0.2s;
+        }
+        
+        #survey a:hover i::before {
+            width: 15px;
+            left: 20%;
+            animation: move 3s infinite;
+        }
+        
+        #survey a i::after {
+            content: "";
+            position: absolute;
+            width: 10px;
+            height: 2px;
+            left: 20%;
+            bottom: -2px;
+            border: 2px solid var(--clr);
+            background: #272822;
+            transition: 0.2s;
+        }
+        
+        #survey a:hover i::after {
+            width: 15px;
+            left: 80%;
+            animation: move 3s infinite;
+        }
+        
+        @keyframes move {
+            0% {
+            transform: translateX(0);
+            }
+            50% {
+            transform: translateX(5px);
+            }
+            100% {
+            transform: translateX(0);
+            }
+        }
+        
+        @keyframes box {
+            0% {
+            box-shadow: #27272c;
+            }
+            50% {
+            box-shadow: 0 0 25px var(--clr);
+            }
+            100% {
+            box-shadow: #27272c;
+            }
+        }
+        
+        
+    </style>
+</head>
+<body>
+    <header>
+        <span class="icon"><a href="{{ url_for('index') }}"><ion-icon name="logo-web-component"></ion-icon></a></span>
+        <nav class="navigation">
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('index2') }}">Quiz</a>
+            <a href='https://drive.google.com/file/d/17K02Wa7HWubtT-mrMHG8-JK6AwNWPsz5/view?usp=sharing' target="_blank">Project Proposal</a>
+            <a href='#' target="_blank">Project Report</a>
+        </nav>
+    </header>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <div class="app">
+        <h1>ข้อสอบ คณิต1</h1>
+        <div class="quiz">
+            <h2 id="question">Question goes here</h2>
+            <div id="answer-buttons">
+                <button class="btn">Answer 1</button>
+                <button class="btn">Answer 2</button>
+                <button class="btn">Answer 3</button>
+                <button class="btn">Answer 4</button>
+            </div>  
+            <button id="next-btn">Next</button> 
+            
+        </div>
+        <div id="result"></div>
+         
+    </div>
+    <div id="survey">
+        <a class="actionButton" target="_blank" style="--clr:#0FF0FC"  href='https://docs.google.com/forms/d/e/1FAIpQLSc1AKccxJz8b4xF_jPnmId4lEsIDx0OWqbgYGTV74wteBY9sw/viewform?usp=sf_link'><span>Survey</span><i></i></a>
+    </div>
+    
+<script>
+    const questions = [
+        {
+            question: ' ถ้าเซตคำตอบของอสมการ |3-2x|-|3x-7|>=0 คือช่วง [a,b] <br>   แล้ว a+b = ? ',
+            answers:[
+                {text : '4' , correct : false},
+                {text : '2' , correct : false},
+                {text : '1' , correct : false},
+                {text : '6' , correct : true},
+            ]
+        },
+        {
+            question: ' ถ้า a , b , c เป็นรากของสมการ 8x<sup>3</sup> + 6x<sup>2</sup> - 5x - 3 =0  โดยที่ a<b<c แล้ว a + c = ?',
+            answers:[
+                {text : '-3/2' , correct : false},
+                {text : '-1/4' , correct : true},
+                {text : '3/4' , correct : false},
+                {text : '1/2' , correct : false},
+            ]
+        },
+        {
+            question: 'กำหนดให้ S = {-2,-1,0,1,2} ถ้าสุ่มหยิบสมาชิก 4 ตัวพร้อมกันจาก S เพื่อนำมาสร้างเมทริกซ์มิติ 2x2 แล้วความน่าจะเป็นที่เมทริกซ์นั้นเป็นเมทริกซ์ไม่เอกฐานเท่ากับข้อใดต่อไปนี้ ',
+            answers:[
+                {text : '2/3' , correct : false},
+                {text : '14/15' , correct : false},
+                {text : '13/15' , correct : true},
+                {text : '1/3' , correct : false},
+            ]
+        },
+        {
+            question: 'กล่องใบหนึ่งมีสลาก 9 ใบ ซึ่งเขียนหมายเลข 1-9 ถ้าสุ่มหยิบสลาก 3 ใบ พร้อมกันจากกล่องใบนี้ แล้วความน่าจะเป็นที่ผลคูณของหมายเลขทั้ง 3 เป็นจำนวนคู่ เท่ากับข้อใดต่อไปนี้',
+            answers:[
+                {text : '33/42' , correct : false},
+                {text : '37/42' , correct : true},
+                {text : '16/21' , correct : false},
+                {text : '19/21' , correct : false},
+            ]
+        },
+        {
+            question: 'กำหนดให้ P(x) = x<sup>3</sup> + ax<sup>2</sup> + bx + 2 เมื่อ a และ b เป็นจำนวนเต็มบวก ถ้า x+2 หาร P(x) เหลือเศษ 2 และสมการ P(x)=0 มีค าตอบเป็นจำนวนตรรกยะอย่างน้อยหนึ่งตัว แล้ว a+b=?',
+            answers:[
+                {text : '11' , correct : true},
+                {text : '12' , correct : false},
+                {text : '13' , correct : false},
+                {text : '15' , correct : false},
+            ]
+        },
+        {
+            question: 'ผลบวกของคำตอบทั้งหมดของสมการ |x<sup>2</sup> - 72| = x เท่ากับข้อใดต่อไปนี้',
+            answers:[
+                {text : '-1' , correct : false},
+                {text : '0' , correct : false},
+                {text : '17' , correct : true},
+                {text : '19' , correct : false},
+            ]
+        },
+        {
+            question: 'กำหนดให้ y = f(x) ผ่านจุด (1,0) และมีความชันของเส้นโค้งที่จุด (x,y) ใดๆ เท่ากับ 4x+1 ถ้า F(x) เป็นปฏิยานุพันธ์หนึ่งของฟังก์ชัน f(x) แล้ว F(x) มีค่าสูงสุดสัมพัทธ์ที่ x เท่ากับข้อใด',
+            answers:[
+                {text : '-2' , correct : false},
+                {text : '-3/2' , correct : true},
+                {text : '1' , correct : false},
+                {text : '-2/5' , correct : false},
+            ]
+        },
+        {
+            question: 'หนังสือไทยต่างกัน 2 เล่ม ภาษาอังกฤษต่างกัน 3 เล่ม คณิตต่างกัน 3 เล่ม ถ้าวางหนังสือซ้อนนกันอยู่ในตั้งเดียวกันแล้วจำนวนวิธีที่จะจัดเรียงหนังสือให้วิชาเดียวกันอยู่ติดกันมีกี่วิธี',
+            answers:[
+                {text : '72 วิธี' , correct : false},
+                {text : '54 วิธี' , correct : false},
+                {text : '108 วิธี' , correct : false},
+                {text : '432 วิธี' , correct : true},
+            ]
+        },
+        {
+            question: 'สมมติว่า รถยนต์ยี่ห้อหนึ่งมีราคาลดลงปีละ 20% ของราคาในปีก่อนหน้า ถ้ากลางปี พ.ศ.2564 รถยนต์ยี่ห้อนี้คันหนึ่งมีราคา 1000000 บาท  แล้วในกลางปีใด รถยนต์คันนี้จึงจะมีราคาต่ำกว่า 400000 บาท เป็นปีแรก',
+            answers:[
+                {text : 'พ.ศ.2566' , correct : false},
+                {text : 'พ.ศ.2567' , correct : false},
+                {text : 'พ.ศ.2568' , correct : false},
+                {text : 'พ.ศ.2569' , correct : true},
+            ]
+        },
+        {
+            question: 'ถ้าจำนวนเชิงซ้อน 3-i เป็นคำตอบหนึ่งของสมการ x<sup>2</sup> + ax + b = 0 โดยที่ a,b เป็นจำนวนจริง แล้ว a+b=?',
+            answers:[
+                {text : '2' , correct : false},
+                {text : '4' , correct : true},
+                {text : '7' , correct : false},
+                {text : '8' , correct : false},
+            ]
+        }
+    ];
+    function sendScoreToBackend(score) {
+        fetch('/store_score', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ score: score })
+        })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
+    }
+
+    // Function to fetch and display user percentile
+    function fetchAndDisplayPercentile(score) {
+    fetch(`/user_percentile2?score_Math1=${score}`)
+    .then(response => response.json())
+    .then(data => {
+        let percentile = data.percentile;
+        const resultDiv = document.getElementById('result');
+        if (percentile > 100) {
+            percentile = 100; // Cap percentile at 100% if it exceeds 100
+        }
+        // Format the percentile to display with two decimal points
+        percentile = percentile.toFixed(2);
+        resultDiv.textContent = `Your percentile: ${percentile}%`;
+    })
+    .catch(error => console.error('Error:', error));
+    }
+
+    const questionElement = document.getElementById('question');
+    const answerButtons = document.getElementById('answer-buttons');
+    const nextButton = document.getElementById('next-btn');
+    const resultDiv = document.getElementById('result');
+    const survey = document.getElementById('survey')
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function startQuiz(){
+        currentQuestionIndex = 0;
+        score = 0;
+        nextButton.innerHTML = 'Next';
+        showQuestion();
+    }
+    function showQuestion(){
+        resetState();
+        let currentQuestion = questions[currentQuestionIndex]
+        let questionNo = currentQuestionIndex + 1 ;
+        questionElement.innerHTML = questionNo + '. ' + currentQuestion.question
+
+        currentQuestion.answers.forEach(answer => {
+            const button = document.createElement('button');
+            button.innerHTML = answer.text;
+            button.classList.add('btn');
+            answerButtons.appendChild(button);
+            if(answer.correct){
+                button.dataset.correct = answer.correct;
+            }
+            button.addEventListener('click' , selectAnswer);
+        })
+    }
+
+    function resetState(){
+        survey.style.display = 'none' ;
+        nextButton.style.display = 'none' ;
+        while(answerButtons.firstChild){
+            answerButtons.removeChild(answerButtons.firstChild)
+        }
+    }
+    function selectAnswer(e){
+    const selectedBtn = e.target;
+    const isCorrect = selectedBtn.dataset.correct === 'true';
+    if(isCorrect){
+        selectedBtn.classList.add('correct');
+        score++;
+    }else{
+        selectedBtn.classList.add('incorrect');
+    }
+    Array.from(answerButtons.children).forEach(button => {
+        if(button.dataset.correct === 'true'){
+            button.classList.add('correct');
+        }
+        button.disabled = true;
+    });
+    nextButton.style.display ='block' ;
+    }
+
+    function showScore() {
+        resetState();
+        questionElement.innerHTML = `You scored ${score} out of ${questions.length}!`;
+        nextButton.innerHTML = 'Play Again';
+        nextButton.style.display = 'block';
+        survey.style.display = 'block';
+
+        // Fetch and display the percentile only if it's the end of the quiz
+        fetchAndDisplayPercentile(score);
+        sendSummaryScoreToBackend(score); // Send the summary score to the backend
+    }
+
+    function sendSummaryScoreToBackend(score) {
+        fetch('/store_summary_score2', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ summary_score2: score })
+        })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
+    }
+
+    
+
+    function handleNextButton(){
+        currentQuestionIndex++
+        if(currentQuestionIndex < questions.length){
+            showQuestion();
+        }else{
+            showScore();
+        }
+    }
+
+    nextButton.addEventListener('click' , ()=>{
+        if(currentQuestionIndex < questions.length){
+            handleNextButton();
+        }else{
+            startQuiz();
+        }
+    }
+    )
+
+
+    startQuiz();
+</script>    
+</body>
+</html>

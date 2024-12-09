@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>webapp รวมข้อสอบ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad&family=Roboto:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <span class="icon"><a href="{{ url_for('index') }}"><ion-icon name="logo-web-component"></ion-icon></a></span>
+        <nav class="navigation">
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('index2') }}">Quiz</a>
+            <a href='https://drive.google.com/file/d/17K02Wa7HWubtT-mrMHG8-JK6AwNWPsz5/view?usp=sharing' target="_blank">Project Proposal</a>
+            <a href='#' target="_blank">Project Report</a>
+            <!-- <a class='btnLogi-popup' href = "{{ url_for('index2') }}">Login</a> -->
+        </nav>
+    </header>
+
+    <h1 class='hh'>Select Category, Year, and Subcategory</h1>
+
+    <div id="categoryContainer">
+        <div class="category" onclick="showSubcategories('9 วิชาสามัญ')">9 วิชาสามัญ</div>
+        <div class="category" onclick="showSubcategories('TGAT')">TGAT</div>
+        <div class="category" onclick="showSubcategories('ALEVEL')">ALEVEL</div>
+    </div>
+
+    <form id="subcategoryForm" action="/get_file_path_id" method="post">
+        <label for="year">Select Year:</label>
+        <select name="year" id="year">
+            
+            {% for year in years %}
+                <option value="{{ year }}">{{ year }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="subcategory">Select Subcategory:</label>
+        <select name="subcategory" id="subcategory">
+            
+            <!-- Options will be dynamically updated based on category selection -->
+        </select>
+
+        <button type="button" id="applyButton" onclick="applySelection()" style="--clr:#1e9bff">Apply</button>
+    </form>
+    
+    <div id="pdfResult">
+        <h2>PDF Result:</h2>
+        <a id="pdfLink" style="display: none;" target="_blank" data-pdf-name="">View PDF</a>
+    </div>
+
+    <a id ='bcontainer' href="{{ url_for('index2') }}">
+        <div id="quizcontainer">
+            <button style="--clr:#0FF0FC"><span>Quiz</span><i></i></button>
+        </div>
+    </a>
+
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script>
+        var pdfLink = document.getElementById("pdfLink");
+
+        function updatePdfLinks(filePaths) {
+        pdfLink.innerHTML = ""; // Clear existing links
+
+        if (!filePaths || filePaths.length === 0) {
+            // Handle the case where no files are found
+            alert("No files found for the selected criteria.");
+            return;
+        }
+
+        for (var i = 0; i < filePaths.length; i++) {
+            var filePath = filePaths[i];
+            var link = document.createElement("a");
+            link.href = window.location.origin + "/view_pdf/" + filePath;
+            link.textContent = filePath;
+            pdfLink.appendChild(link);
+        }
+        }
+
+        // Call the function after receiving data from the server
+        fetch('/get_file_path_id', {
+        // ... (existing fetch configuration)
+        })
+        .then(response => response.json())
+        .then(data => {
+        updatePdfLinks(data.file_paths);
+        })
+        .catch(error => {
+        // Handle errors gracefully
+        console.error(error);
+        });
+        function showSubcategories(category) {
+            var subcategoryForm = document.getElementById("subcategoryForm");
+            var subcategorySelect = document.getElementById("subcategory");
+
+            // Show the form
+            subcategoryForm.style.display = "block";
+
+            // Show all subcategories
+            subcategorySelect.innerHTML = ""; // Clear existing options
+            var subcategories = getSubcategoriesForCategory(category);
+            subcategories.forEach(function(subcategory) {
+                var option = document.createElement("option");
+                option.value = subcategory;
+                option.textContent = subcategory;
+                subcategorySelect.appendChild(option);
+            });
+        }
+
+        function applySelection() {
+            // Get selected category, year, and subcategory
+            var selectedCategory = document.querySelector(".category.selected");
+            if (!selectedCategory) {
+                alert("Please select a category.");
+                return;
+            }
+
+            var category = selectedCategory.innerText;
+            var year = document.getElementById("year").value;
+            var subcategory = document.getElementById("subcategory").value;
+
+            // Check for "All" options
+            if (year === "all") {
+                // Handle the case for "All" years
+                console.log("Selected all years.");
+            }
+
+            if (subcategory === "all") {
+                // Handle the case for "All" subcategories
+                console.log("Selected all subcategories.");
+            }
+
+            // Fetch file_path_id from the server
+            fetch('/get_file_path_id', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    category: category,
+                    year: year,
+                    subcategory: subcategory,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                var pdfLink = document.getElementById("pdfLink");
+
+                // console.log("Data received from server:", data);
+
+                if (data.file_path_id) {
+                    // Update PDF link using the base URL and append file_path_id
+                    var pdfFileName = data.file_path_id;  // Assuming the file_path_id is the file name
+                    pdfLink.href = window.location.origin + "/view_pdf/" + data.file_path_id;
+                    pdfLink.dataset.pdfName = pdfFileName;
+
+                    console.log("Updated PDF link:", pdfLink.href);
+
+                    pdfLink.style.display = "block";
+
+                    // Update the content of the PDF link with the file name
+                    pdfLink.textContent = pdfFileName;
+                } else {
+                    // Handle the case when file_path_id is not found
+                    pdfLink.href = "javascript:void(0)"; // Set a placeholder or an empty link
+                    pdfLink.style.display = "none"; // Hide the link
+                    // alert("File path ID not found for the selected criteria.");
+                }
+                // Handle the case when no files are found
+                if (!data.file_path_id && data.error) {
+                    alert(data.error);
+                }
+            })
+
+        }
+
+        // Add a click event listener to each category div
+        document.querySelectorAll(".category").forEach(function(categoryDiv) {
+            categoryDiv.addEventListener("click", function() {
+                // Remove the 'selected' class from all category divs
+                document.querySelectorAll(".category").forEach(function(div) {
+                    div.classList.remove("selected");
+                });
+
+                // Add the 'selected' class to the clicked category div
+                categoryDiv.classList.add("selected");
+            });
+        });
+
+        // Function to get subcategories based on the selected category
+        function getSubcategoriesForCategory(category) {
+            switch (category) {
+                case 'TGAT':
+                    return [ "TGAT1", "TGAT2", "TGAT3"];
+                case 'TPAT':
+                    return [ "TPAT1", "TPAT2", "TPAT3"];
+                case 'ALEVEL':
+                    return [ "คณิต1", "คณิต2", "เคมี", "ชีววิทยา", "ไทย", "สังคม", "ภาษาอังกฤษ", "ภาษาต่างประเทศ"];
+                case '9 วิชาสามัญ':
+                    return [ "คณิต1", "คณิต2", "เคมี", "ชีววิทยา", "ไทย", "สังคม", "ภาษาอังกฤษ"];
+                default:
+                    return [];
+            }
+        }
+    </script>
+</body>
+</html>
