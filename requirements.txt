@@ -1,5 +1,4 @@
 Flask==3.0.0
-sqlite3==0.0.1
 werkzeug==3.0.1
 click==8.1.7
 itsdangerous==2.1.2
